@@ -122,14 +122,9 @@ Replaced the long list of biosignal measurements with professional charts:
 - **SWIP Scores**: `#a855f7` (Purple gradient)
 
 ### Emotion Emojis
-- Stressed: 😰
+- Stressed: 😟
 - Calm: 😌
-- Happy/Amused: 😊
-- Neutral: 😐
-- Sad: 😢
-- Anxious: 😟
-- Focused: 🧐
-- Excited: 🤩
+- Amused: 😊
 - Default: 🙂
 
 ## Files Modified

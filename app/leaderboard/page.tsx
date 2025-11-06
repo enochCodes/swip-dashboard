@@ -87,9 +87,7 @@ async function getLeaderboardData() {
         // Calculate average stress rate from emotions
         const stressRateMap: Record<string, number> = {
           'Stressed': 80,
-          'Anxious': 70,
-          'Neutral': 20,
-          'Happy': 10,
+          'Calm': 15,
           'Amused': 10,
         };
         const allEmotions = sessions
@@ -212,9 +210,7 @@ async function getCategoryData() {
       // Calculate stress from emotions
       const stressRateMap: Record<string, number> = {
         'Stressed': 80,
-        'Anxious': 70,
-        'Neutral': 20,
-        'Happy': 10,
+        'Calm': 15,
         'Amused': 10,
       };
       const allEmotions = sessions

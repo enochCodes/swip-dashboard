@@ -50,8 +50,8 @@ const formatDate = (date: Date | null) => {
 
 const emotionDisplayMap: Record<string, string> = {
   stressed: 'Stressed',
-  neutral: 'Neutral',
-  happy: 'Amused',
+  calm: 'Calm',
+  amused: 'Amused',
 };
 
 const normalizeEmotion = (emotion: string | null): string => {
@@ -63,8 +63,8 @@ const getEmotionBadgeClass = (emotion: string | null) => {
   if (!emotion) return 'bg-gray-500/20 text-gray-400 border-gray-500/30';
   const e = emotion.toLowerCase();
   if (e === 'stressed') return 'bg-purple-500/20 text-purple-400 border-purple-500/30';
-  if (e === 'neutral') return 'bg-blue-500/20 text-blue-400 border-blue-500/30';
-  if (e === 'happy') return 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30';
+  if (e === 'calm') return 'bg-blue-500/20 text-blue-400 border-blue-500/30';
+  if (e === 'amused') return 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30';
   return 'bg-gray-500/20 text-gray-400 border-gray-500/30';
 };
 

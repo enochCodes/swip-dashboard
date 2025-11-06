@@ -1,12 +1,12 @@
 ---
 title: "SWIP Dashboard - Developer Guide"
 description: "Complete guide for developers using the SWIP Dashboard"
-date: "2025-11-04"
+date: "2025-11-06"
 ---
 
 # SWIP Dashboard - Developer Guide
 
-Welcome to the **SWIP Dashboard** - an open-source wellness transparency platform that visualizes wellness impact data from tracked applications.
+Welcome to the **SWIP Dashboard** – an open-source wellness transparency platform that visualises wellness impact data from the SWIP App and verified partner applications.
 
 ---
 
@@ -25,17 +25,19 @@ SWIP Dashboard is a **public transparency platform** that displays wellness metr
 ### Architecture
 
 ```
-SWIP App (User Wellness Tracker)
-  ↓
-  Tracks apps on user's device
-  ↓
-  Sends data to SWIP Dashboard (via internal API)
-  ↓
+SWIP App (First-Party Wellness Tracker)
+  ↓ (x-swip-internal-key)
+  Sends data to SWIP Dashboard ingestion APIs
+
+Verified Partner App (SWIP Ware SDK)
+  ↓ (x-api-key scoped to app_id)
+  Verified via verified-apps.json + Redis cache
+
 SWIP Dashboard
   ↓
-  Aggregates & displays data publicly
+  Aggregates & caches data (Postgres + Redis)
   ↓
-Developers can claim apps & read their data
+Developers claim apps & consume analytics
 ```
 
 ---
@@ -83,19 +85,34 @@ Use your API key to read wellness data for your claimed apps via the Developer R
 
 ## 🔐 API Architecture
 
-### Two API Systems
+### Authentication Channels
 
-| API Type | Purpose | Authentication | Who Uses It |
-|----------|---------|----------------|-------------|
-| **SWIP Internal API** | Data ingestion (write) | SWIP internal key | SWIP App only |
-| **Developer Read API** | Data reading (read-only) | Developer API key | Developers |
+| API Layer | Purpose | Header | Who Uses It |
+|-----------|---------|--------|-------------|
+| **SWIP Internal Ingestion** | First-party writes (apps, sessions, biosignals, emotions) | `x-swip-internal-key` | SWIP App only |
+| **Verified Partner Ingestion** | SWIP Ware SDK writes | `x-api-key` (scoped) | Verified partner apps listed in `verified-apps.json` |
+| **Developer Read API** | Analytics & reporting | `x-api-key` | Developers with claimed apps |
+| **Dashboard Portal** | UI & admin APIs | `better-auth` cookie | Authenticated dashboard users |
 
 ### Security Model
 
-- ✅ **SWIP App** sends all wellness data (protected with internal key)
-- ✅ **Developers** can only READ data for their claimed apps
-- ✅ **No public data ingestion** - prevents spam and ensures data quality
-- ✅ **Complete data isolation** - developers only see their apps' data
+- ✅ **SWIP App** can ingest data for any tracked app ID using the internal key.
+- ✅ **Verified partners** may ingest data only for their assigned `app_id`. The request fails if the ID is absent from the verified registry or mismatched.
+- ✅ **Developers** have read-only access limited to their claimed apps.
+- ✅ **No anonymous writes** – all public users consume anonymised, cached data.
+
+### Ingestion Guard Flow
+
+1. **Request arrives** with either `x-swip-internal-key` or `x-api-key`.
+2. `validateIngestionAuth` runs:
+   - internal key → immediate success with universal scope
+   - developer key → lookup hashed key, ensure not revoked, return key metadata
+   - reload `verified-apps.json` (and Redis cache) if the app ID is missing
+   - compare payload `app_id` to the key’s external app ID
+3. `verifyAppIdMatch` enforces that partner payloads never inject data for other apps.
+4. On success the endpoint proceeds; otherwise a `401/403` response explains why the ingestion failed.
+
+The verified apps registry lives at the repository root (`verified-apps.json`). It is cached in-memory and in Redis (`verified-apps:config`, TTL 5 minutes) and automatically refreshed when a lookup misses.
 
 ---
 
@@ -301,7 +318,7 @@ x-api-key: YOUR_API_KEY
       "phys_subscore": 52.3,
       "emo_subscore": 36.2,
       "confidence": 0.92,
-      "dominant_emotion": "calm",
+      "dominant_emotion": "Calm",
       "model_id": "wesad_emotion_v1_0",
       "timestamp": "2025-11-04T14:00:05Z"
     }
@@ -311,15 +328,9 @@ x-api-key: YOUR_API_KEY
 ```
 
 **Supported Emotions:**
-- `calm` - Relaxed, peaceful state
-- `stressed` - High stress or anxiety
-- `focused` - Concentrated, attentive
-- `happy` - Positive, joyful
-- `neutral` - Baseline emotional state
-- `sad` - Low mood
-- `anxious` - Worried, nervous
-- `excited` - High energy, enthusiasm
-- `amused` - Entertained, playful
+- `stressed` - Elevated stress indicators (safety flag)
+- `calm` - Resting/relaxed parasympathetic state
+- `amused` - Positive affect / light joy
 
 **SWIP Score Breakdown:**
 - **SWIP Score** (0-100): Overall wellness score

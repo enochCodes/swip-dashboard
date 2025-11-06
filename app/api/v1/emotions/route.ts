@@ -19,7 +19,7 @@ const EmotionSchema = z.object({
   phys_subscore: z.number().default(0),
   emo_subscore: z.number().default(0),
   confidence: z.number().min(0).max(1),
-  dominant_emotion: z.string(),  // calm, stressed, anxious, happy, neutral, sad, focused, excited, Amused
+  dominant_emotion: z.enum(['Stressed', 'Calm', 'Amused', 'stressed', 'calm', 'amused']),
   model_id: z.string()
 });
 

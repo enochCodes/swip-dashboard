@@ -16,7 +16,7 @@ Updated the app sessions page (`/app/[appId]/sessions`) to use the new schema wi
 - Includes full biosignals and emotions hierarchy
 
 #### **Improved Calculations**
-- **Stress Rate**: Now calculated as percentage of "stressed" emotions from all biosignals
+- **Stress Rate**: Now calculated as percentage of **stressed** emotions
   - Before: Fixed rate based on single emotion
   - After: `(stressed emotions / total emotions) * 100`
 
@@ -26,7 +26,7 @@ Updated the app sessions page (`/app/[appId]/sessions`) to use the new schema wi
 - **Average BPM**: Added calculation from heart rate biosignals
   - New field for SessionData compatibility
 
-- **Emotion Distribution**: Counts all emotions from all biosignals
+- **Emotion Distribution**: Counts all emotions across all sessions (stressed, calm, amused)
   - More comprehensive emotion analysis
 
 ### 2. **UI Modernization** ✓

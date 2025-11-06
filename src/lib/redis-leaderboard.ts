@@ -80,7 +80,7 @@ export async function getTimeUntilExpiry(): Promise<number> {
 }
 
 /**
- * Calculate leaderboard and cache for 24 hours
+ * Calculate leaderboard and cache for 1 hour
  */
 export async function calculateAndCacheLeaderboard(): Promise<LeaderboardData> {
     const data = await calculateLeaderboardDirect();
@@ -113,7 +113,7 @@ async function calculateLeaderboardDirect(): Promise<LeaderboardData> {
   const expiresAt = new Date(now.getTime() + CACHE_DURATION * 1000);
 
   // Valid emotions to track (match database case - capitalized)
-  const VALID_EMOTIONS = ['Stressed', 'Neutral', 'Happy']; // Capitalized for Emotion model
+  const VALID_EMOTIONS = ['Stressed', 'Calm', 'Amused']; // Supported emotion set
   
   // Get all apps with session data
   const apps = await prisma.app.findMany({
@@ -155,9 +155,7 @@ async function calculateLeaderboardDirect(): Promise<LeaderboardData> {
       // Calculate stress rate from emotions
       const stressRateMap: Record<string, number> = {
         'Stressed': 80,
-        'Anxious': 70,
-        'Neutral': 20,
-        'Happy': 10,
+        'Calm': 15,
         'Amused': 10,
       };
       const allEmotions = sessions
@@ -270,9 +268,7 @@ async function calculateLeaderboardDirect(): Promise<LeaderboardData> {
     // Calculate stress from emotions
     const stressRateMap: Record<string, number> = {
       'Stressed': 80,
-      'Anxious': 70,
-      'Neutral': 20,
-      'Happy': 10,
+      'Calm': 15,
       'Amused': 10,
     };
     const allEmotions = sessions

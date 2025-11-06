@@ -1,0 +1,3 @@
+- Amused: 😊
+- Calm: 😌
+- Stressed: 😟

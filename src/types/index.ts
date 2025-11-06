@@ -116,15 +116,11 @@ export interface HRVMetrics {
   minHR?: number;
 }
 
-export type EmotionState =
-  | 'calm'
-  | 'focused'
+export type EmotionName =
   | 'stressed'
-  | 'anxious'
-  | 'happy'
-  | 'sad'
-  | 'neutral'
-  | 'excited';
+  | 'calm'
+  | 'amused'
+  | 'unknown';
 
 export interface AppSession {
   id: string;

@@ -278,7 +278,7 @@ model Emotion {
   physSubscore      Float         @default(0)  // Physical component score
   emoSubscore       Float         @default(0)  // Emotional component score
   confidence        Float                       // Model confidence (0-1)
-  dominantEmotion   String                      // calm, stressed, anxious, happy, neutral, sad, focused, excited, Amused
+  dominantEmotion   String                      // Stressed, Calm, Amused
   modelId           String                      // AI model identifier (e.g., wesad_emotion_v1_0)
   createdAt         DateTime      @default(now())
   

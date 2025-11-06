@@ -418,12 +418,11 @@ export function SessionDetailFullPage({ sessionId }: SessionDetailFullPageProps)
               <div className="relative overflow-hidden rounded-2xl border border-gray-800 bg-gradient-to-br from-purple-900/10 to-pink-900/10 p-6">
                 <div className="flex items-center gap-4 mb-4">
                   <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-purple-500/30 to-pink-500/30 flex items-center justify-center">
-                    <span className="text-3xl">
-                      {averageEmotion.toLowerCase().includes('stress') ? '😰' : 
-                       averageEmotion.toLowerCase().includes('calm') ? '😌' : 
-                       averageEmotion.toLowerCase().includes('happy') ? '😊' : 
-                       averageEmotion.toLowerCase().includes('neutral') ? '😐' : '🙂'}
-                    </span>
+                    <div className="text-lg">
+                      {averageEmotion.toLowerCase().includes('stressed') ? '😟' :
+                       averageEmotion.toLowerCase().includes('calm') ? '😌' :
+                       averageEmotion.toLowerCase().includes('amused') ? '😊' : '🙂'}
+                    </div>
                   </div>
                   <div>
                     <p className="text-gray-400 text-xs mb-1">Average Emotional State</p>
@@ -471,18 +470,12 @@ export function SessionDetailFullPage({ sessionId }: SessionDetailFullPageProps)
                   {Object.entries(sessionDetail.stats.emotionDistribution).map(([emotion, count]) => {
                     const total = sessionDetail.stats.totalEmotions;
                     const percentage = (count / total) * 100;
-                    const colorMap: Record<string, string> = {
-                      'stressed': 'bg-red-500',
-                      'calm': 'bg-green-500',
-                      'neutral': 'bg-gray-500',
-                      'happy': 'bg-yellow-500',
-                      'anxious': 'bg-orange-500',
-                      'focused': 'bg-blue-500',
-                      'excited': 'bg-pink-500',
-                      'sad': 'bg-indigo-500',
-                      'amused': 'bg-purple-500',
+                    const gradientMap: Record<string, string> = {
+                      'stressed': 'bg-purple-500',
+                      'calm': 'bg-blue-500',
+                      'amused': 'bg-yellow-500',
                     };
-                    const color = colorMap[emotion.toLowerCase()] || 'bg-purple-500';
+                    const color = gradientMap[emotion.toLowerCase()] || 'bg-purple-500';
                     
                     return (
                       <div key={emotion}>
@@ -692,14 +685,13 @@ export function SessionDetailFullPage({ sessionId }: SessionDetailFullPageProps)
                         const data = payload[0].payload;
                         const getEmoji = (emotion: string) => {
                           const e = emotion.toLowerCase();
-                          if (e.includes('stress')) return '😰';
+                          if (e.includes('stressed')) return '😰';
                           if (e.includes('calm')) return '😌';
-                          if (e.includes('happy') || e.includes('amused')) return '😊';
-                          if (e.includes('neutral')) return '😐';
-                          if (e.includes('sad')) return '😢';
+                          if (e.includes('amused')) return '😊';
                           if (e.includes('anxious')) return '😟';
                           if (e.includes('focused')) return '🧐';
                           if (e.includes('excited')) return '🤩';
+                          if (e.includes('sad')) return '😢';
                           return '🙂';
                         };
                         
@@ -740,14 +732,13 @@ export function SessionDetailFullPage({ sessionId }: SessionDetailFullPageProps)
                     .map(([emotion, count]) => {
                       const getEmoji = (emotion: string) => {
                         const e = emotion.toLowerCase();
-                        if (e.includes('stress')) return '😰';
+                        if (e.includes('stressed')) return '😰';
                         if (e.includes('calm')) return '😌';
-                        if (e.includes('happy') || e.includes('amused')) return '😊';
-                        if (e.includes('neutral')) return '😐';
-                        if (e.includes('sad')) return '😢';
+                        if (e.includes('amused')) return '😊';
                         if (e.includes('anxious')) return '😟';
                         if (e.includes('focused')) return '🧐';
                         if (e.includes('excited')) return '🤩';
+                        if (e.includes('sad')) return '😢';
                         return '🙂';
                       };
                       

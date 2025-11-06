@@ -108,8 +108,8 @@ export function SessionDetailPanel({ session, onClose }: SessionDetailPanelProps
   // Valid emotions - map database emotions to display names
   const emotionDisplayMap: Record<string, string> = {
     'stressed': 'Stressed',
-    'neutral': 'Neutral',
-    'happy': 'Amused', // Map 'happy' to 'Amused' for display
+    'calm': 'Calm',
+    'amused': 'Amused',
   };
   
   const normalizeEmotion = (emotion: string | null): string => {
@@ -509,16 +509,13 @@ export function SessionDetailPanel({ session, onClose }: SessionDetailPanelProps
                     {Object.entries(sessionDetail.stats.emotionDistribution).map(([emotion, count]) => {
                       const total = sessionDetail.stats.totalEmotions;
                       const percentage = (count / total) * 100;
-                      const colorMap: Record<string, string> = {
-                        'stressed': 'bg-red-500',
-                        'calm': 'bg-green-500',
-                        'neutral': 'bg-gray-500',
-                        'happy': 'bg-yellow-500',
-                        'anxious': 'bg-orange-500',
-                        'focused': 'bg-blue-500',
-                        'excited': 'bg-pink-500',
-                      };
-                      const color = colorMap[emotion.toLowerCase()] || 'bg-purple-500';
+                      const emotionColor = emotion.toLowerCase();
+                      const gradientClass = {
+                        'stressed': 'bg-purple-500',
+                        'calm': 'bg-blue-500',
+                        'amused': 'bg-yellow-500',
+                        'default': 'bg-gray-600'
+                      }[emotionColor] || 'bg-gray-600';
                       
                       return (
                         <div key={emotion}>
@@ -528,7 +525,7 @@ export function SessionDetailPanel({ session, onClose }: SessionDetailPanelProps
                           </div>
                           <div className="w-full h-2 bg-gray-800 rounded-full overflow-hidden">
                             <div
-                              className={`h-full ${color} transition-all duration-500`}
+                              className={`h-full ${gradientClass} transition-all duration-500`}
                               style={{ width: `${percentage}%` }}
                             />
                           </div>

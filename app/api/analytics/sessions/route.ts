@@ -100,7 +100,7 @@ export async function POST(request: NextRequest) {
             emotions: {
               where: {
                 dominantEmotion: {
-                  in: ['Stressed', 'Neutral', 'Happy', 'stressed', 'neutral', 'happy']
+                  in: ['Stressed', 'Calm', 'Amused', 'stressed', 'calm', 'amused']
                 }
               },
               orderBy: {
